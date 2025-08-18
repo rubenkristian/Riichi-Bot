@@ -1,0 +1,14 @@
+{
+  "name": "riichi-bot",
+  "outputfilename": "riichi-bot",
+  "assetdir": "frontend/dist",
+  "wailsjsdir": "frontend/src",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "Kristian Ruben Sianturi",
+    "email": "rubenkristian96@gmail.com"
+  }
+}
