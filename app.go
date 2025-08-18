@@ -160,6 +160,20 @@ func (a *App) ListTournament(query database.PaginationTournament) ([]database.To
 	return tournaments, nil
 }
 
+func (a *App) ListMatch(query database.PaginationMatch) ([]database.Match, error) {
+	if a.Service == nil || a.Riichi == nil || a.DiscordBot == nil {
+		return nil, fmt.Errorf("Please login before input tournament")
+	}
+
+	matches, err := a.RiichiDB.ListMatch(query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return matches, nil
+}
+
 func (a *App) DetailTournament(tournamentId uint64) (*database.Tournament, error) {
 	if a.Service == nil || a.Riichi == nil || a.DiscordBot == nil {
 		return nil, fmt.Errorf("Please login before input tournament")
@@ -174,20 +188,55 @@ func (a *App) DetailTournament(tournamentId uint64) (*database.Tournament, error
 	return tournament, nil
 }
 
-// func (a *App) CreateTable(
-// 	playerId1,
-// 	playerId2,
-// 	playerId3,
-// 	playerId4 uint64) error {
-// 	if a.Service == nil || a.Riichi == nil || a.DiscordBot != nil {
-// 		return fmt.Errorf("Please login before input tournament")
-// 	}
+func (a *App) CreateTable(turneyId uint64, players []uint64) error {
+	if a.Service == nil || a.Riichi == nil || a.DiscordBot != nil {
+		return fmt.Errorf("Please login before input tournament")
+	}
 
-// 	a.RiichiDB.CreateMatch(body database.MatchBody)
-// 	return nil
-// }
+	_, err := a.RiichiDB.CreateMatch(database.MatchBody{
+		TournamentId: turneyId,
+		Players:      players,
+	})
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (a *App) FetchScoreTurnament(turneyId uint64) error {
+	if a.Service == nil || a.Riichi == nil || a.DiscordBot != nil {
+		return fmt.Errorf("Please login before input tournament")
+	}
+
+	if err := a.Service.FetchTournamentMatch(turneyId); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (a *App) FetchDetailScoreTournament(tournamentMatchId, paiPuId string) error {
+	if a.Service == nil || a.Riichi == nil || a.DiscordBot != nil {
+		return fmt.Errorf("Please login before input tournament")
+	}
+
+	if err := a.Service.FetchDetailTournamentMatch(tournamentMatchId, paiPuId); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (a *App) InputTournamentMatchScore(tournamentMatchPlayerId uint64, penalty int64) error {
+	if a.Service == nil || a.Riichi == nil || a.DiscordBot != nil {
+		return fmt.Errorf("Please login before input tournament")
+	}
+
+	if err := a.Service.InputTournamentMatchPlayerPenalty(tournamentMatchPlayerId, penalty); err != nil {
+		return err
+	}
+
+	return nil
 }
