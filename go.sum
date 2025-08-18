@@ -55,8 +55,6 @@ github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZN
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rivo/uniseg v0.4.7 h1:WUdvkW8uEhrYfLC4ZzdpI2ztxP1I582+49Oc5Mq64VQ=
 github.com/rivo/uniseg v0.4.7/go.mod h1:FN3SvrM+Zdj16jyLfmOkMNblXMcoc8DfTHruCPUcx88=
-github.com/rubenkristian/riichi-turney v0.1.1 h1:RJuVxWM0JdeHc8yowMDPae4eO8pVkcCj2ptmyWvH3OY=
-github.com/rubenkristian/riichi-turney v0.1.1/go.mod h1:zXUtxE0qZf1KLIVwbP0eaMm+3l7BKM/srzjNAvBrYfo=
 github.com/rubenkristian/riichi-turney v0.1.2 h1:MrItW9CpM7z/n+4PPucbIHTvqHbHx5p3Roewk6yVHlk=
 github.com/rubenkristian/riichi-turney v0.1.2/go.mod h1:zXUtxE0qZf1KLIVwbP0eaMm+3l7BKM/srzjNAvBrYfo=
 github.com/samber/lo v1.49.1 h1:4BIFyVfuQSEpluc7Fua+j1NolZHiEHEpaSEKdsH0tew=

@@ -1,3 +1,5 @@
+import { For } from "solid-js";
+
 type MultiSelectInputProps = {
   label: string;
   value: string[];
@@ -6,7 +8,7 @@ type MultiSelectInputProps = {
   error?: string;
 };
 
-function MultiSelectInput(props: MultiSelectInputProps) {
+export default function MultiSelectInput(props: MultiSelectInputProps) {
   const handleMultiSelect = (e: Event) => {
     const target = e.target as HTMLSelectElement;
     const selected = Array.from(target.selectedOptions).map((opt) => opt.value);
