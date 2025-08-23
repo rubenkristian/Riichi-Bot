@@ -13,7 +13,7 @@ export default function Discord() {
 
   return (
     <div class="flex w-full h-screen items-center mt-10 justify-center">
-      <div class="flex flex-col gap-1 h-screen w-96">
+      <div class="flex flex-col gap-2 h-screen w-96">
         <TextInput
           label="Bot App Token"
           placeholder="Type token"
@@ -47,13 +47,16 @@ export default function Discord() {
                 adminChannelID(),
                 notifyChannelID(),
               );
-              navigate("/home");
+              navigate("/home", { replace: true });
             } catch (e) {
               alert(e);
             }
           }}
         >
           Start BOT
+        </Button>
+        <Button onClick={async () => {}} variant="danger">
+          Logout
         </Button>
       </div>
     </div>

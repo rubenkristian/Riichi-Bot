@@ -10,7 +10,7 @@ type TextInputProps = {
 export default function TextInput(props: TextInputProps) {
   return (
     <div class="mb-5">
-      <label class="block text-sm font-semibold mb-1 text-gray-700">
+      <label class="block text-sm font-semibold mb-1 dark:text-gray-200 text-gray-700">
         {props.label}
       </label>
       <input
