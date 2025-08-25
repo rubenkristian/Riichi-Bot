@@ -57,7 +57,7 @@ export default function App() {
         <Route path={"/fetch-tournament"} component={FetchTournament} />
         <Route path={"/tournament/:id"} component={DetailTournament} />
         <Route path={"/tournament/:id/tables"} component={ListMatch} />
-        <Route path={"/tournament/:id/tables/:table"} component={DetailMatch} />
+        <Route path={"/tournament/:id/tables/create"} component={DetailMatch} />
         <Route path={"/tournament/:id/scores"} component={ListScore} />
         <Route path={"/tournament/:id/scores/:match"} component={DetailScore} />
         <Route

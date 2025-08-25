@@ -19,7 +19,9 @@ export function FetchScoreTurnament(arg1:number):Promise<void>;
 
 export function GetDetailTournamentMatch(arg1:string):Promise<database.TournamentMatch>;
 
-export function GetRegisteredPlayers(arg1:number,arg2:database.Pagination):Promise<Array<database.RegisterTournament>>;
+export function GetListTable(arg1:number,arg2:database.PaginationMatch):Promise<Array<database.Match>>;
+
+export function GetRegisteredPlayers(arg1:boolean,arg2:number,arg3:string,arg4:database.Pagination):Promise<Array<database.RegisterTournament>>;
 
 export function GetTournamentMatchList(arg1:number,arg2:database.PaginationTournament):Promise<Array<database.TournamentMatch>>;
 
@@ -29,7 +31,7 @@ export function InputTournamentMatchScore(arg1:number,arg2:number):Promise<void>
 
 export function IsBotRunning():Promise<boolean>;
 
-export function ListMatch(arg1:database.PaginationMatch):Promise<Array<database.Match>>;
+export function ListMatch(arg1:number,arg2:database.PaginationMatch):Promise<Array<database.Match>>;
 
 export function ListTournament(arg1:database.PaginationTournament):Promise<Array<database.Tournament>>;
 
@@ -46,3 +48,5 @@ export function StartTable(arg1:number):Promise<void>;
 export function StopBot():Promise<void>;
 
 export function SubmitDetailTournamentMatch(arg1:number,arg2:number):Promise<void>;
+
+export function SubmitPoint(arg1:number,arg2:number):Promise<void>;

@@ -4,7 +4,15 @@ import {
   FetchScoreTurnament,
   GetTournamentMatchList,
 } from "../../wailsjs/go/main/App";
-import { createSignal, For, Index, onCleanup, onMount, Show } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  For,
+  Index,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
 import { database } from "../../wailsjs/go/models";
 
 export default function ListScore() {
@@ -22,7 +30,6 @@ export default function ListScore() {
 
   const loadMore = async () => {
     if (!loadNext()) return;
-    console.log(loadNext() ? "Yes" : "no");
     pagination.Page = page();
     pagination.Search = "";
     pagination.Size = 10;
@@ -31,11 +38,11 @@ export default function ListScore() {
     query.Pagination = pagination;
     try {
       const tournamentMatches = await GetTournamentMatchList(+params.id, query);
-      if (tournamentMatches.length === 0) {
+      setTournamentMatch((prev) => [...prev, ...tournamentMatches]);
+      if (tournamentMatches.length != 10) {
         setLoadNext(false);
         return;
       }
-      setTournamentMatch((prev) => [...prev, ...tournamentMatches]);
     } catch (e) {
       alert(e);
     }
@@ -82,6 +89,10 @@ export default function ListScore() {
             try {
               setSyncScore(true);
               await FetchScoreTurnament(+params.id);
+              setTournamentMatch([]);
+              setPage(1);
+              setLoadNext(true);
+              loadMore();
             } catch (e) {
               alert(e);
             } finally {
@@ -121,11 +132,9 @@ export default function ListScore() {
             </a>
           )}
         </For>
-        <Show when={loadNext()}>
-          <div ref={sentinel} class="p-2 text-center text-gray-500">
-            Loading more…
-          </div>
-        </Show>
+        <div ref={sentinel} class="p-2 text-center text-gray-500">
+          <Show when={loadNext()}>Loading more…</Show>
+        </div>
       </div>
     </div>
   );

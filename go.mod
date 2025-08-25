@@ -5,7 +5,7 @@ go 1.23.3
 toolchain go1.24.6
 
 require (
-	github.com/rubenkristian/riichi-turney v0.1.12
+	github.com/rubenkristian/riichi-turney v0.1.18
 	github.com/wailsapp/wails/v2 v2.10.2
 )
 

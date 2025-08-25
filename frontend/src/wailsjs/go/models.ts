@@ -89,6 +89,7 @@ export namespace database {
 	    id: number;
 	    player_id: number;
 	    tournament_id: number;
+	    point: number;
 	    // Go type: time
 	    created_at: any;
 	    // Go type: time
@@ -107,6 +108,7 @@ export namespace database {
 	        this.id = source["id"];
 	        this.player_id = source["player_id"];
 	        this.tournament_id = source["tournament_id"];
+	        this.point = source["point"];
 	        this.created_at = this.convertValues(source["created_at"], null);
 	        this.updated_at = this.convertValues(source["updated_at"], null);
 	        this.deleted_at = this.convertValues(source["deleted_at"], null);
@@ -265,6 +267,7 @@ export namespace database {
 	    Pagination: Pagination;
 	    FromDate?: string;
 	    ToDate?: string;
+	    Status?: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new PaginationMatch(source);
@@ -275,6 +278,7 @@ export namespace database {
 	        this.Pagination = this.convertValues(source["Pagination"], Pagination);
 	        this.FromDate = source["FromDate"];
 	        this.ToDate = source["ToDate"];
+	        this.Status = source["Status"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -341,6 +345,7 @@ export namespace database {
 	    penalty: number;
 	    final_point: number;
 	    player_id: number;
+	    status: boolean;
 	    Player: Player;
 	
 	    static createFrom(source: any = {}) {
@@ -356,6 +361,7 @@ export namespace database {
 	        this.penalty = source["penalty"];
 	        this.final_point = source["final_point"];
 	        this.player_id = source["player_id"];
+	        this.status = source["status"];
 	        this.Player = this.convertValues(source["Player"], Player);
 	    }
 	

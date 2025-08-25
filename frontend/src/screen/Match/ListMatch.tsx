@@ -1,3 +1,148 @@
-export default function ListMatch() {
-  return <div></div>;
+import { useNavigate, useParams } from "@solidjs/router";
+import Button from "../../components/Button";
+import {
+  FetchScoreTurnament,
+  GetListTable,
+  GetTournamentMatchList,
+  ListMatch,
+  StartTable,
+} from "../../wailsjs/go/main/App";
+import {
+  createEffect,
+  createSignal,
+  For,
+  Index,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
+import { database } from "../../wailsjs/go/models";
+
+export default function ListMatchScreen() {
+  const navigate = useNavigate();
+  const params = useParams();
+  const [page, setPage] = createSignal<number>(0);
+  const [loadNext, setLoadNext] = createSignal<boolean>(true);
+  const [matches, setMatches] = createSignal<Array<database.Match>>([]);
+  const [tableStatus, setTableStatus] = createSignal<number | null>(null);
+  const pagination = new database.Pagination();
+  const query = new database.PaginationMatch();
+  let sentinel!: HTMLDivElement; // ref for the bottom div
+
+  const loadMore = async () => {
+    if (!loadNext()) return;
+    pagination.Page = page();
+    pagination.Search = "";
+    pagination.Size = 10;
+    pagination.Sort = "DESC";
+    pagination.SortBy = "created_at";
+    query.Pagination = pagination;
+    try {
+      const matches = await GetListTable(+params.id, query);
+      setMatches((prev) => [...prev, ...matches]);
+      if (matches.length != 10) {
+        setLoadNext(false);
+        return;
+      }
+    } catch (e) {
+      alert(e);
+    }
+  };
+
+  onMount(async () => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setPage((prev) => prev + 1);
+        loadMore();
+      }
+    });
+
+    observer.observe(sentinel);
+
+    onCleanup(() => observer.disconnect());
+  });
+
+  return (
+    <div class="flex flex-col gap-1 mx-10 my-4">
+      <div class="flex justify-between">
+        <a
+          class="flex items-center justify-center h-10 w-10 rounded-full bg-white shadow hover:bg-gray-100"
+          onClick={() => history.back()}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="black"
+            stroke-width="2"
+            class="h-6 w-6"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </a>
+        <Button
+          onClick={async () => {
+            navigate(`/tournament/${params.id}/tables/create`);
+          }}
+        >
+          Create Table
+        </Button>
+      </div>
+      <div class="flex flex-col mt-4 gap-2">
+        <For each={matches()}>
+          {(data) => (
+            <a
+              href="#"
+              class="card dark:bg-blue-900 bg-base-100 w-full shadow-sm"
+            >
+              <div class="card-body">
+                <h2 class="card-title">
+                  {data.id} ({data.created_at})
+                </h2>
+                <b>{data.status === 1 ? "Done" : "Not played"}</b>
+                <Index each={data.PlayerMatches}>
+                  {(player) => (
+                    <span>
+                      Name: {player().Player.riichi_city_name} (
+                      {player().player_id})
+                    </span>
+                  )}
+                </Index>
+                <Show when={data.status !== 1}>
+                  <div class="card-actions justify-end">
+                    <button
+                      class="btn btn-primary"
+                      onClick={async () => {
+                        try {
+                          setTableStatus(data.id);
+                          await StartTable(data.id);
+                        } catch (e) {
+                          alert(e);
+                        } finally {
+                          setTableStatus(null);
+                        }
+                      }}
+                    >
+                      <Show when={data.id == tableStatus()}>
+                        <span class="loading loading-spinner"></span>
+                      </Show>
+                      Start Table
+                    </button>
+                  </div>
+                </Show>
+              </div>
+            </a>
+          )}
+        </For>
+        <div ref={sentinel} class="p-2 text-center text-gray-500">
+          <Show when={loadNext()}>Loading more…</Show>
+        </div>
+      </div>
+    </div>
+  );
 }

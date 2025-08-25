@@ -34,8 +34,12 @@ export function GetDetailTournamentMatch(arg1) {
   return window['go']['main']['App']['GetDetailTournamentMatch'](arg1);
 }
 
-export function GetRegisteredPlayers(arg1, arg2) {
-  return window['go']['main']['App']['GetRegisteredPlayers'](arg1, arg2);
+export function GetListTable(arg1, arg2) {
+  return window['go']['main']['App']['GetListTable'](arg1, arg2);
+}
+
+export function GetRegisteredPlayers(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['GetRegisteredPlayers'](arg1, arg2, arg3, arg4);
 }
 
 export function GetTournamentMatchList(arg1, arg2) {
@@ -54,8 +58,8 @@ export function IsBotRunning() {
   return window['go']['main']['App']['IsBotRunning']();
 }
 
-export function ListMatch(arg1) {
-  return window['go']['main']['App']['ListMatch'](arg1);
+export function ListMatch(arg1, arg2) {
+  return window['go']['main']['App']['ListMatch'](arg1, arg2);
 }
 
 export function ListTournament(arg1) {
@@ -88,4 +92,8 @@ export function StopBot() {
 
 export function SubmitDetailTournamentMatch(arg1, arg2) {
   return window['go']['main']['App']['SubmitDetailTournamentMatch'](arg1, arg2);
+}
+
+export function SubmitPoint(arg1, arg2) {
+  return window['go']['main']['App']['SubmitPoint'](arg1, arg2);
 }

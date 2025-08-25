@@ -57,6 +57,7 @@ func (a *App) beforeClose(ctx context.Context) (prevent bool) {
 // shutdown is called at application termination
 func (a *App) shutdown(ctx context.Context) {
 	// Perform your teardown here
+	a.StopBot()
 }
 
 func (a *App) CheckSession() bool {
@@ -64,9 +65,11 @@ func (a *App) CheckSession() bool {
 }
 
 func (a *App) LogoutRiichi() error {
-	if a.Riichi != nil {
-
+	if a.RiichiDB == nil || a.Riichi == nil {
+		return fmt.Errorf("Failed to start bot, you must login first")
 	}
+
+	a.Riichi.Logout()
 
 	return nil
 }
@@ -172,12 +175,12 @@ func (a *App) ListTournament(query database.PaginationTournament) ([]database.To
 	return tournaments, nil
 }
 
-func (a *App) ListMatch(query database.PaginationMatch) ([]database.Match, error) {
+func (a *App) ListMatch(tournamentId uint64, query database.PaginationMatch) ([]database.Match, error) {
 	if a.Service == nil || a.Riichi == nil || a.DiscordBot == nil {
 		return nil, fmt.Errorf("Please login before input tournament")
 	}
 
-	matches, err := a.RiichiDB.ListMatch(query)
+	matches, err := a.RiichiDB.ListMatch(tournamentId, query)
 
 	if err != nil {
 		return nil, err
@@ -253,12 +256,12 @@ func (a *App) InputTournamentMatchScore(tournamentMatchPlayerId uint64, penalty 
 	return nil
 }
 
-func (a *App) GetRegisteredPlayers(tournamentId uint64, paginate database.Pagination) ([]database.RegisterTournament, error) {
+func (a *App) GetRegisteredPlayers(isMatch bool, tournamentId uint64, search string, paginate database.Pagination) ([]database.RegisterTournament, error) {
 	if a.Service == nil || a.Riichi == nil || a.DiscordBot == nil {
 		return nil, fmt.Errorf("Please login before input tournament")
 	}
 
-	registerPlayer, err := a.RiichiDB.ListRegisterTournamentPlayers(tournamentId, paginate)
+	registerPlayer, err := a.RiichiDB.ListRegisterTournamentPlayers(isMatch, tournamentId, search, paginate)
 
 	if err != nil {
 		return nil, err
@@ -335,4 +338,30 @@ func (a *App) FetchLog(paiPuId string) (*riichicommand.Log, error) {
 	}
 
 	return log, nil
+}
+
+func (a *App) SubmitPoint(tournamentMatchPlayerId uint64, penalty int64) error {
+	if a.Service == nil || a.Riichi == nil || a.DiscordBot == nil {
+		return fmt.Errorf("Please login before input tournament")
+	}
+
+	if err := a.Service.InputTournamentMatchPlayerPenalty(tournamentMatchPlayerId, penalty); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (a *App) GetListTable(tournamentId uint64, query database.PaginationMatch) ([]database.Match, error) {
+	if a.Service == nil || a.Riichi == nil || a.DiscordBot == nil {
+		return nil, fmt.Errorf("Please login before input tournament")
+	}
+
+	matches, err := a.RiichiDB.ListMatch(tournamentId, query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return matches, nil
 }

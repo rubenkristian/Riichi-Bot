@@ -28,7 +28,13 @@ export default function RegisteredPlayer() {
     pagination.Sort = "ASC";
     pagination.SortBy = "id";
     try {
-      const registedPlayer = await GetRegisteredPlayers(+params.id, pagination);
+      const registedPlayer = await GetRegisteredPlayers(
+        false,
+        +params.id,
+        "",
+        pagination,
+      );
+      console.log(registedPlayer);
       setRegisteredPlayers((prev) => [...prev, ...registedPlayer]);
       if (registedPlayer.length != 10) {
         setLoadNext(false);
@@ -50,10 +56,6 @@ export default function RegisteredPlayer() {
     observer.observe(sentinel);
 
     onCleanup(() => observer.disconnect());
-  });
-
-  createEffect(() => {
-    console.log(loadNext());
   });
 
   return (

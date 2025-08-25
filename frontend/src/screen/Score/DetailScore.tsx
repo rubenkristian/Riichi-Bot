@@ -4,21 +4,48 @@ import {
   FetchDetailTournamentMatch,
   FetchLog,
   GetDetailTournamentMatch,
+  SubmitPoint,
 } from "../../wailsjs/go/main/App";
 import {
+  createEffect,
   createResource,
   createSignal,
   For,
   Index,
+  onMount,
   Show,
   Suspense,
 } from "solid-js";
+import TextInput from "../../components/Form/TextInput";
 
 export default function DetailScore() {
   const params = useParams();
   const [syncDetailScore, setSyncDetailScore] = createSignal<boolean>(false);
+  const [penaltyPlayer, setPenaltyPlayer] = createSignal<Array<number>>([
+    0, 0, 0, 0,
+  ]);
+  const [submitPointStatus, setPointStatus] = createSignal<Array<boolean>>([
+    false,
+    false,
+    false,
+    false,
+  ]);
   const [tournamentMatch] = createResource(async () => {
-    return await GetDetailTournamentMatch(params.match);
+    const detailTournamentMatch = await GetDetailTournamentMatch(params.match);
+    const penalties = [];
+    for (const playerMatch of detailTournamentMatch?.TournamentMatchPlayers ??
+      []) {
+      penalties.push(playerMatch.penalty / 10);
+      console.log(playerMatch);
+    }
+    console.log(penalties);
+    setPenaltyPlayer(penalties);
+
+    return detailTournamentMatch;
+  });
+
+  createEffect(() => {
+    console.log(penaltyPlayer());
   });
 
   return (
@@ -72,12 +99,53 @@ export default function DetailScore() {
             Sync Score Tournament Table
           </Button>
         </div>
-        <div class="flex flex-col mt-4 gap-2">
+        <div class="flex flex-col mt-4 gap-4">
           <Index each={tournamentMatch()?.TournamentMatchPlayers}>
-            {(player) => (
-              <span>
-                Name: {player().Player.riichi_city_name} ({player().player_id})
-              </span>
+            {(player, index) => (
+              <div class="flex flex-col gap-1">
+                <label>Player {index + 1}</label>
+                <p>
+                  Name: {player().Player.riichi_city_name} ({player().player_id}
+                  )
+                </p>
+                <p>Score: {player().score}</p>
+                <p>Point: {player().point / 10}</p>
+                <Show when={player().final_point != 0}>
+                  <p>Final Point: {player().final_point / 10}</p>
+                </Show>
+                <TextInput
+                  label="Penalty"
+                  placeholder="Type Tournament Id"
+                  type="number"
+                  value={penaltyPlayer()[index].toString()}
+                  onChange={(val: string) => {
+                    const penalties = penaltyPlayer();
+                    penalties[index] = +val;
+                    setPenaltyPlayer(penalties);
+                  }}
+                />
+                <Button
+                  onClick={async () => {
+                    const pointStatus = submitPointStatus();
+                    pointStatus[index] = true;
+                    setPointStatus(pointStatus);
+                    try {
+                      const penalties = penaltyPlayer();
+                      await SubmitPoint(player().id, penalties[index]);
+                    } catch (e) {
+                      alert(e);
+                    } finally {
+                      pointStatus[index] = false;
+                      setPointStatus(pointStatus);
+                    }
+                  }}
+                >
+                  <Show when={submitPointStatus()[index]}>
+                    <span class="loading loading-spinner"></span>
+                  </Show>
+                  Submit
+                </Button>
+              </div>
             )}
           </Index>
         </div>
