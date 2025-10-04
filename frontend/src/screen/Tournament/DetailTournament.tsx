@@ -8,6 +8,7 @@ import {
 } from "solid-js";
 import {
   DetailDataTournament,
+  PlayRandomMatch,
   SendPlayerInvite,
 } from "../../wailsjs/go/main/App";
 import { database } from "../../wailsjs/go/models";
@@ -15,6 +16,7 @@ import { database } from "../../wailsjs/go/models";
 export default function DetailTournament() {
   const navigate = useNavigate();
   const params = useParams();
+  const [startTableRandom, setStartTableRandom] = createSignal<boolean>(false);
   const [sendInvited, setSendInvited] = createSignal<boolean>(false);
   const [tournament] = createResource(async () => {
     return await DetailDataTournament(Number(params.id));
@@ -79,6 +81,24 @@ export default function DetailTournament() {
                 }}
               >
                 Registered Players
+              </button>
+              <button
+                class="btn btn-primary"
+                onClick={async () => {
+                  try {
+                    setStartTableRandom(true);
+                    await PlayRandomMatch(Number(params.id));
+                  } catch (err) {
+                    alert(err);
+                  } finally {
+                    setStartTableRandom(false);
+                  }
+                }}
+              >
+                <Show when={startTableRandom()}>
+                  <span class="loading loading-spinner"></span>
+                </Show>
+                Start Table Random
               </button>
             </div>
           </div>

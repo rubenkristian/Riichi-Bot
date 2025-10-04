@@ -74,6 +74,10 @@ export function LogoutRiichi() {
   return window['go']['main']['App']['LogoutRiichi']();
 }
 
+export function PlayRandomMatch(arg1) {
+  return window['go']['main']['App']['PlayRandomMatch'](arg1);
+}
+
 export function SendPlayerInvite(arg1) {
   return window['go']['main']['App']['SendPlayerInvite'](arg1);
 }

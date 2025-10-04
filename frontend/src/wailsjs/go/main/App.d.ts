@@ -39,6 +39,8 @@ export function LoginRiichiApi(arg1:string,arg2:string):Promise<void>;
 
 export function LogoutRiichi():Promise<void>;
 
+export function PlayRandomMatch(arg1:number):Promise<void>;
+
 export function SendPlayerInvite(arg1:number):Promise<void>;
 
 export function StartBot(arg1:string,arg2:string,arg3:string,arg4:string):Promise<void>;

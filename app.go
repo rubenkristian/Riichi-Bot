@@ -365,3 +365,17 @@ func (a *App) GetListTable(tournamentId uint64, query database.PaginationMatch) 
 
 	return matches, nil
 }
+
+func (a *App) PlayRandomMatch(tournamentId uint64) error {
+	if a.Service == nil || a.Riichi == nil || a.DiscordBot == nil {
+		return fmt.Errorf("Please login before input tournament")
+	}
+
+	err := a.Service.StartTableRandom(tournamentId)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
